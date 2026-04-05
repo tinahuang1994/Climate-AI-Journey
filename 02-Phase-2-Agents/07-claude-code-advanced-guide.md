@@ -2,6 +2,8 @@
 
 *A practical, operationalized playbook for building AI products with structure, proof, and discipline.*
 
+> ⚠️ **Decay disclaimer:** Claude Code ships updates frequently. Specific commands, flags, and features described here may have changed. Use this as a conceptual foundation and verify current details at [claude.ai/code](https://claude.ai/code).
+
 ---
 
 ## What This Guide Is For

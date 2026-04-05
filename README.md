@@ -57,6 +57,8 @@ Going beyond prompting — learning when to actually change the AI's brain.
 ## 📝 A Note on These Materials
 The study notes in this repo were created with the help of AI (Claude and Gemini) as personalized, applied summaries of each course. The learning journey, the climate projects I designed and built, and the decisions behind them are entirely my own. AI was my tutor — not the student.
 
+⚠️ **Decay disclaimer:** AI moves fast. Some specific tools, APIs, or framework details in these notes may be outdated by the time you read them. Treat everything here as a conceptual foundation — always verify against current documentation before building.
+
 ---
 
 ## 💡 Reflection

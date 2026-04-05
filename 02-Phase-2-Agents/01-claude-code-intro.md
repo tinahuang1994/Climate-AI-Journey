@@ -2,6 +2,8 @@
 
 *Created: March 2026 | Author: Tina Huang | Source: Anthropic Claude Code Docs + DeepLearning.AI*
 
+> ⚠️ **Decay disclaimer:** Claude Code ships updates frequently. Specific commands, flags, and features described here may have changed. Use this as a conceptual foundation and verify current details at [claude.ai/code](https://claude.ai/code).
+
 We are moving beyond simple chatbots and learning how to use **Claude Code**---a tool that doesn't just talk about work, but actually performs it.
 
 Throughout this guide, we will use the **Climate Watch Project** as our example.
