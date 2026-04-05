@@ -49,13 +49,13 @@ This roadmap is designed to take you from an absolute beginner to a Systems Arch
 
     -   *Course:* [Google: Prompting Essentials](https://www.coursera.org/learn/google-prompting-essentials)
 
-    -   *Study Note:* [Prompting Like a Pro course](./01-Phase-1-Foundations/01-Prompting%20Like%20a%20Pro%20course.md)
+    -   *Study Note:* [Prompting Like a Pro course](./01-Phase-1-Foundations/01-prompting-like-a-pro.md)
 
 -   **Module 1.2:** Advanced Logic & Persona Patterns
 
     -   *Course:* [Vanderbilt University: Prompt Engineering for ChatGPT](https://www.coursera.org/learn/prompt-engineering)
 
-    -   *Study Note:* [Prompt Engineering Masterclass — Italy Trip](./01-Phase-1-Foundations/02-Prompt%20Engineering%20Masterclass_%20Italy%20Trip.md)
+    -   *Study Note:* [Prompt Engineering Masterclass — Italy Trip](./01-Phase-1-Foundations/02-prompt-engineering-masterclass.md)
 
 ### Phase 2: Agentic Workflows & Tooling
 
@@ -65,13 +65,13 @@ This roadmap is designed to take you from an absolute beginner to a Systems Arch
 
     -   *Documentation:* [Anthropic: Introducing Claude Code](https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/overview)
 
-    -   *Study Note:* [Claude Code Intro guide](./02-Phase-2-Agents/01-Claude%20Code%20Intro%20guide.md)
+    -   *Study Note:* [Claude Code Intro guide](./02-Phase-2-Agents/01-claude-code-intro.md)
 
 -   **Module 2.2:** Sovereign Systems & Intent vs. Implementation
 
     -   *Course:* [Stanford CS146S: The Modern Software Developer](https://www.google.com/search?q=https://cs146.stanford.edu/) (Concepts applied via Obsidian + Claude Code)
 
-    -   *Study Notes:* [StanfordCS146SModernSoftwareDeveloper](./02-Phase-2-Agents/02-StanfordCS146SModernSoftwareDeveloper.md) and [Obsidian + Claude Code](./02-Phase-2-Agents/03-Obsidian+%20Claude%20Code.md)
+    -   *Study Notes:* [StanfordCS146SModernSoftwareDeveloper](./02-Phase-2-Agents/02-stanford-modern-software-developer.md) and [Obsidian + Claude Code](./02-Phase-2-Agents/03-obsidian-claude-code.md)
 
 #### 2B: Multi-Agent Frameworks
 
@@ -79,19 +79,19 @@ This roadmap is designed to take you from an absolute beginner to a Systems Arch
 
     -   *Course:* [Anthropic: Introduction to Agent Skills](https://anthropic.skilljar.com/introduction-to-agent-skills)
 
-    -   *Study Note:* [Key Learnings from Agent Skills with Anthropic](./02-Phase-2-Agents/04-Key%20Learnings%20from%20Agent%20Skills%20with%20Anthropic.md)
+    -   *Study Note:* [Key Learnings from Agent Skills with Anthropic](./02-Phase-2-Agents/04-agent-skills-anthropic.md)
 
 -   **Module 2.4:** Orchestrating AI Swarms (CrewAI)
 
     -   *Course:* [DeepLearning.AI: Multi-AI Agent Systems with crewAI](https://www.deeplearning.ai/short-courses/multi-ai-agent-systems-with-crewai/)
 
-    -   *Study Note:* [Multi-agent systems with CrewAI](./02-Phase-2-Agents/05-Multi-agent%20systems%20with%20CrewAI.md)
+    -   *Study Note:* [Multi-agent systems with CrewAI](./02-Phase-2-Agents/05-multi-agent-crewai.md)
 
 -   **Module 2.5:** Dynamic Group Chat Architectures (AutoGen)
 
     -   *Course:* [DeepLearning.AI: AI Agentic Design Patterns with AutoGen](https://www.deeplearning.ai/short-courses/ai-agentic-design-patterns-with-autogen/)
 
-    -   *Study Note:* [AutoGen AI Agentic Design](./02-Phase-2-Agents/06-AutoGen%20AI%20Agentic%20Design.md)
+    -   *Study Note:* [AutoGen AI Agentic Design](./02-Phase-2-Agents/06-autogen-agentic-design.md)
 
 #### 2C: Advanced Agentic Engineering
 
@@ -113,13 +113,13 @@ This roadmap is designed to take you from an absolute beginner to a Systems Arch
 
     -   *Course:* [DeepLearning.AI: Knowledge Graphs for RAG](https://www.deeplearning.ai/short-courses/knowledge-graphs-rag/)
 
-    -   *Study Note:* [Knowledge Graphs for RAG](./03-Phase-3-Reliability/02-knowledgegraphforrag.md)
+    -   *Study Note:* [Knowledge Graphs for RAG](./03-Phase-3-Reliability/02-knowledge-graphs-rag.md)
 
 -   **Module 3.3:** Adversarial Auditors & Golden Datasets
 
     -   *Course:* [DeepLearning.AI: Quality and Safety for LLM Applications](https://www.deeplearning.ai/short-courses/quality-safety-llm-applications/)
 
-    -   *Study Note:* [Quality and Safety for LLM Applications](./03-Phase-3-Reliability/03-Quality%20and%20Safety%20for%20LLM%20Applications.md)
+    -   *Study Note:* [Quality and Safety for LLM Applications](./03-Phase-3-Reliability/03-quality-safety-llm.md)
 
 ### Phase 4: Aesthetic Design & Usability
 
@@ -141,7 +141,7 @@ This roadmap is designed to take you from an absolute beginner to a Systems Arch
 
     -   *Course:* Columbia University: Building Customized LLMs with OpenAI (Module 1)
 
-    -   *Study Note:* [Module 1 Study Guide](./05-Phase-5-Model-Customization/Module%201%20Study%20Guide.md)
+    -   *Study Note:* [Module 1 Study Guide](./05-Phase-5-Model-Customization/01-module-1-study-guide.md)
 
     -   *Note for Phase 3 graduates:* Module 5.1 revisits RAG from a different angle — the Columbia course frames it in the context of deciding when NOT to use it. If you completed Phase 3, you can skim this and jump straight to Module 5.2.
 
@@ -149,7 +149,7 @@ This roadmap is designed to take you from an absolute beginner to a Systems Arch
 
     -   *Course:* Columbia University: Building Customized LLMs with OpenAI (Module 2)
 
-    -   *Study Note:* [Module 2 Study Guide](./05-Phase-5-Model-Customization/Module%202%20Study%20Guide.md)
+    -   *Study Note:* [Module 2 Study Guide](./05-Phase-5-Model-Customization/02-module-2-study-guide.md)
 
 📖 Climate AI Engineering: The Full Learning Guide
 =================================================
