@@ -60,10 +60,6 @@ To get the best results, use these core strategies:
 
 -   **The /plan Command:** Before Claude changes anything, type /plan. This puts Claude in "Read-Only" mode. It will tell you exactly what it *intends* to do (e.g., "I will check Section 4 for methane targets") without changing files yet.
 
--   **The /test Command:** Once Claude makes a change, use /test. This tells Claude to verify its own work. It will run a check to ensure the "Audit" it just wrote is accurate and follows every point in your rubric.
-
--   **Thinking Mode:** For hard tasks, type /think. This gives Claude extra time to "reason" through a problem before it starts typing.
-
 **5. Staying in Control**
 
 You are always the boss. Claude Code is built with safety in mind.
@@ -93,8 +89,6 @@ Copy and paste this into Claude Code to start your first analysis:
   claude        Starts the AI assistant.                             Type claude in your folder.
   /init         Sets up the initial memory (CLAUDE.md).              Run this first in a new project.
   /plan         **Read-only mode.** Claude explains the plan.        "Use /plan to outline how you'll grade this NDC."
-  /test         **Verification mode.** Claude checks its own work.   "Use /test to make sure the audit is complete."
-  /think        Turns on "Thinking Mode" for complex reasoning.    Use this for comparing two different countries.
   /clear        Wipes the current chat history for a fresh start.    Use this when switching from Brazil to Kenya.
   @             Points Claude to a specific file or folder.          "Read \@brazil_ndc.pdf"
   exit          Closes Claude Code.                                  Type exit when you're done.

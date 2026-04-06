@@ -18,6 +18,167 @@ You don't need a software background to apply this. You need discipline and a cl
 
 ---
 
+## Part 0: Before You Start Anything — The Setup No One Tells You About
+
+*Most people skip this. It's the single highest-leverage thing you can do before writing a single line of code on any project.*
+
+The advanced guide you're about to read covers how to build projects with discipline. But there's a layer underneath all of it that most tutorials never mention: **your personal Claude Code environment**. This includes a global rules file and a memory system that persist across every project, every session, forever.
+
+Without this setup, you start every project from scratch — Claude doesn't know your preferences, your past decisions, or your working style. With it, Claude already knows you before you say hello.
+
+---
+
+### The Two Files That Change Everything
+
+**1. Your Global CLAUDE.md (`~/.claude/CLAUDE.md`)**
+
+Every project has its own CLAUDE.md (covered in Part 2). But there's also a global one that lives at `~/.claude/CLAUDE.md` on your machine. Claude reads this at the start of *every* session, on *every* project, automatically.
+
+Think of it as your personal standing orders — the rules that are always true regardless of what you're building.
+
+**What belongs in the global file:**
+- How you like to work (do you want explanations before execution? do you hate manual steps?)
+- Design principles that apply to everything you build
+- Triggers for important behaviors (when should Claude stop and verify? when should it ask before committing to a tech choice?)
+
+**What does NOT belong here:**
+- Project-specific rules (those go in the project CLAUDE.md)
+- Technology defaults (your stack changes per project)
+- Anything vague like "write clean code" — Claude can't act on that
+
+**The critical rule:** Every line must earn its place. If removing a line wouldn't change Claude's behavior, cut it. A focused 10-line file outperforms a comprehensive 50-line file. Long files get ignored.
+
+**Two examples to illustrate the difference:**
+
+*A software engineer's global CLAUDE.md might look like:*
+```markdown
+# My Global Rules
+
+## Code Style
+- Always TypeScript strict mode — never use `any`
+- Named exports only, never default exports
+- Functions under 40 lines; extract helpers if longer
+
+## Workflow
+- Run tests before every commit
+- When a test fails, diagnose root cause — never suppress the error
+- State the plan before making non-trivial changes
+```
+
+*A non-engineer product builder's global CLAUDE.md (based on real experience building Smoke Story, NoThanks, and Climate Triple Takes):*
+```markdown
+# My Global Rules
+
+## Working Style
+- Never give me manual steps. Always find an automated path.
+- At the start of any new project, before writing code: ask what it does,
+  who uses it, the 3 must-haves, and any technical constraints.
+  Then agree on stack and create a project CLAUDE.md.
+- When a command fails repeatedly or unexpectedly, stop and explain
+  before trying more fixes.
+- When building anything involving calculations, financial figures,
+  data methodology, or system prompt logic — run a sub-agent review
+  before considering it done.
+- When choosing a library or architecture that would be hard to change
+  later — flag it, state what it rules out in the future,
+  and confirm before committing.
+
+## Design
+- Two fonts max.
+- No UI component libraries — always build custom components
+  to keep the product visually distinct.
+```
+
+Notice the difference. The software engineer's rules are about code quality. The product builder's rules are about workflow and decision-making. Neither is wrong — they reflect what actually matters to that specific person based on real mistakes.
+
+**How to create yours:**
+```
+mkdir -p ~/.claude
+touch ~/.claude/CLAUDE.md
+```
+Then open it in any text editor and write your rules. Don't use `/init` — write every line yourself. Auto-generated files lack intentionality and tend to be bloated.
+
+The most important habit: **every time Claude does something you have to correct, ask yourself "should this be in my global CLAUDE.md so I never say it again?"** That question, asked consistently, is how the file gets good over time.
+
+---
+
+**2. Your Memory System (`~/.claude/projects/[path]/memory/`)**
+
+Claude Code doesn't remember you between sessions by default. Each session starts fresh. The memory system fixes this — it's a folder of markdown files that Claude reads at the start of each conversation to reconstruct context about who you are, what you're working on, and how you like to work.
+
+There are four types of memory worth keeping:
+
+| Type | What it stores | Example |
+|------|---------------|---------|
+| **User** | Who you are, your background, your expertise | "Non-engineer product builder. Comfortable with terminals. Bilingual EN/ZH." |
+| **Feedback** | Things you've corrected or confirmed — rules for future behavior | "Never suggest copy-paste. Always find an automated path. Why: user explicitly flagged this." |
+| **Project** | Ongoing work, key decisions, current state of active projects | "SmokeStory: PM2.5 data has 4–8 week lag. Always surface this to users." |
+| **Reference** | Where to find things in external systems | "Climate AI Journey repo: github.com/tinahuang1994/Climate-AI-Journey" |
+
+**What NOT to put in memory:**
+- Code patterns (read the code directly)
+- Git history (use `git log`)
+- Anything in CLAUDE.md already (duplication creates confusion)
+- Ephemeral task details from the current session
+
+**A real example of why this matters:**
+
+When building Smoke Story's financial impact methodology, the fact that *"financial impact figures must be shown separately and never summed"* was a deliberate product decision based on methodology — not something derivable from the code. Without a memory entry, the next session with Claude could easily wire them together, silently breaking your methodology. With a memory entry, Claude knows this constraint before you mention it.
+
+**The index file:**
+
+Your memory folder should have a `MEMORY.md` index — one line per entry — that Claude reads first to decide which detailed files to pull:
+
+```markdown
+# Memory Index
+
+- [Tina Huang — Profile](user_profile.md) — Background, projects, working style
+- [Writing Style Guide](user_writing.md) — Voice and tone rules for public-facing copy
+- [SmokeStory](project_smokestory.md) — Financial methodology decisions, data lag rules
+- [NoThanks](project_nothanks.md) — Phase system, tone mapping, session storage pattern
+```
+
+Keep the index under 20 entries. Each line should tell Claude enough to decide whether to read the full file.
+
+---
+
+### The Project Kickoff Ritual
+
+The most expensive mistakes in any project happen in the first 30 minutes — wrong architecture, wrong library, misunderstood requirements. The project kickoff ritual is a 5-10 minute conversation that prevents all of them.
+
+**Never start building until you've answered these four questions:**
+
+1. **What does it do in one sentence?**
+2. **Who uses it?** (Be specific — "climate professionals who know what NDCs are" is better than "anyone interested in climate")
+3. **What are the 3 must-haves?** (Not nice-to-haves — the things it absolutely must do to be worth shipping)
+4. **Are there any technical constraints that affect the architecture?** (Need 3D? Real-time data? Auth? Works offline? This question caught the Leaflet/3D map problem before it happened)
+
+**Why question 4 matters so much:**
+
+On one real project, a 2D mapping library (Leaflet) was chosen early in a session without asking whether 3D was ever needed. Three weeks later, 3D capability was wanted — but Leaflet doesn't support it. The architecture was locked. The lesson: irreversible technology choices made without surfacing future requirements are one of the most common and expensive failure modes in Claude Code projects.
+
+If you add this rule to your global CLAUDE.md (`"When choosing a library or architecture that would be hard to change later — flag it, state what it rules out, and confirm before committing"`), Claude will catch it automatically.
+
+**After the kickoff conversation:**
+
+Before writing any feature code, create your project CLAUDE.md. It should have at minimum:
+- How to run the dev server
+- The stack chosen and why
+- The folder structure
+- Any design decisions already made
+
+Only then does implementation begin.
+
+---
+
+### Why This Layer Exists
+
+The project CLAUDE.md, PRD, and harness engineering covered in the rest of this guide are about making individual projects work well. This setup layer — global rules and memory — is about making *you* work well across all projects, all the time.
+
+The people who get the most out of Claude Code aren't necessarily the ones who write the best prompts. They're the ones who've invested in their environment — so that Claude already knows their standards before the first message of every session.
+
+---
+
 ## Part 1: The Mental Model — Why Harness Engineering Matters
 
 ### The Problem With Unstructured Claude Code Sessions
