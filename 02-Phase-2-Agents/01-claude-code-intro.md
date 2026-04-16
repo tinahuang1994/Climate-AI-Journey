@@ -84,14 +84,17 @@ Copy and paste this into Claude Code to start your first analysis:
 
 **Claude Code Cheat Sheet**
 
-  **Command**   **What it does**                                     **Climate Watch Example**
-  ------------- ---------------------------------------------------- ------------------------------------------------------
-  claude        Starts the AI assistant.                             Type claude in your folder.
-  /init         Sets up the initial memory (CLAUDE.md).              Run this first in a new project.
-  /plan         **Read-only mode.** Claude explains the plan.        "Use /plan to outline how you'll grade this NDC."
-  /clear        Wipes the current chat history for a fresh start.    Use this when switching from Brazil to Kenya.
-  @             Points Claude to a specific file or folder.          "Read \@brazil_ndc.pdf"
-  exit          Closes Claude Code.                                  Type exit when you're done.
+| Command | What it does |
+|---|---|
+| `claude` | Starts the AI assistant in your terminal. |
+| `/init` | Scans your project folder and creates a `CLAUDE.md` memory file. Run this first in any new project. |
+| `/plan` or `Shift+Tab` | Enters **read-only planning mode**. Claude can read files but cannot change anything. Use this before building anything non-trivial. |
+| `/clear` | Wipes the current chat history completely. Use when switching tasks or starting fresh. |
+| `/compact` | Summarizes the session to free up context without losing the thread. Use when a session gets long. |
+| `/rewind` | Undoes recent changes and returns to a prior state. Use when Claude went down the wrong path. |
+| `/help` | Lists all available commands. |
+| `@filename` | Points Claude to a specific file or folder (e.g., `@brazil_ndc.pdf`). |
+| `exit` | Closes Claude Code. |
 
 **Learning**:
 
