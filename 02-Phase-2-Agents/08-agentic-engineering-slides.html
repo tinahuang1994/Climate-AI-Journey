@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>从氛围编程到 Agentic Engineering</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #F5F2EC;
+      --bronze: #B07D3A;
+      --bronze-light: #C89040;
+      --dark: #1C1C1A;
+      --mid: #4A4845;
+      --rule: #DDD8CF;
+      --slide-w: 1280px;
+      --slide-h: 720px;
+    }
+
+    body {
+      background: #2A2825;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      padding: 24px 16px 48px;
+      font-family: 'DM Sans', system-ui, sans-serif;
+    }
+
+    /* --- Slide container --- */
+    .deck { width: 100%; max-width: var(--slide-w); }
+
+    .slide {
+      display: none;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: var(--cream);
+      position: relative;
+      overflow: hidden;
+    }
+    .slide.active { display: flex; }
+
+    /* --- Nav --- */
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      margin-top: 20px;
+    }
+
+    .nav-btn {
+      background: none;
+      border: 1px solid rgba(255,255,255,0.25);
+      color: rgba(255,255,255,0.7);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      padding: 8px 24px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .nav-btn:hover { border-color: var(--bronze-light); color: var(--bronze-light); }
+    .nav-btn:disabled { opacity: 0.25; cursor: default; }
+
+    .nav-counter {
+      color: rgba(255,255,255,0.45);
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      min-width: 60px;
+      text-align: center;
+    }
+
+    /* --- Shared layout helpers --- */
+    .slide-inner {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 56px 72px;
+    }
+
+    .slide-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--bronze);
+      margin-bottom: 20px;
+    }
+
+    .slide-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 44px;
+      font-weight: 700;
+      color: var(--dark);
+      line-height: 1.15;
+      max-width: 820px;
+    }
+
+    .slide-rule {
+      width: 48px;
+      height: 2px;
+      background: var(--bronze);
+      margin: 24px 0;
+      flex-shrink: 0;
+    }
+
+    .slide-body {
+      font-size: 17px;
+      color: var(--mid);
+      line-height: 1.65;
+      flex: 1;
+    }
+
+    /* ===================== */
+    /* SLIDE 1 — Title       */
+    /* ===================== */
+    .s1 {
+      flex-direction: row;
+      padding: 0;
+    }
+
+    .s1-left {
+      width: 52%;
+      background: var(--dark);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 72px 64px;
+    }
+
+    .s1-eyebrow {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--bronze);
+      margin-bottom: 28px;
+    }
+
+    .s1-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 52px;
+      font-weight: 700;
+      color: var(--cream);
+      line-height: 1.1;
+      margin-bottom: 32px;
+    }
+
+    .s1-sub {
+      font-size: 15px;
+      color: rgba(245,242,236,0.55);
+      line-height: 1.6;
+    }
+
+    .s1-right {
+      flex: 1;
+      background: var(--cream);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: flex-start;
+      padding: 56px 56px 48px;
+    }
+
+    .s1-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      width: 100%;
+      margin-bottom: 32px;
+    }
+
+    .s1-pill {
+      background: white;
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      padding: 14px 16px;
+      font-size: 12px;
+      color: var(--mid);
+      line-height: 1.4;
+    }
+
+    .s1-pill strong {
+      display: block;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--bronze);
+      margin-bottom: 4px;
+    }
+
+    .s1-author {
+      font-size: 11px;
+      color: rgba(28,28,26,0.4);
+      letter-spacing: 0.08em;
+    }
+
+    /* ===================== */
+    /* SLIDE 2 — Problem     */
+    /* ===================== */
+    .s2-symptoms {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 8px;
+    }
+
+    .symptom-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+    }
+
+    .symptom-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: white;
+      border: 1.5px solid var(--rule);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .symptom-text strong {
+      display: block;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 3px;
+    }
+
+    .symptom-text span {
+      font-size: 14px;
+      color: var(--mid);
+    }
+
+    /* ===================== */
+    /* SLIDE 3 — Comparison  */
+    /* ===================== */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      flex: 1;
+      margin-top: 8px;
+    }
+
+    .compare-col {
+      background: white;
+      border: 1px solid var(--rule);
+      border-radius: 10px;
+      padding: 28px 28px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .compare-col.highlight {
+      border-color: var(--bronze);
+      background: #FBF7F0;
+    }
+
+    .compare-col-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .compare-col-label.bronze { color: var(--bronze); }
+    .compare-col-label.grey { color: #999; }
+
+    .compare-col-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 20px;
+    }
+
+    .compare-item {
+      font-size: 14px;
+      color: var(--mid);
+      padding: 8px 0;
+      border-bottom: 1px solid var(--rule);
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      line-height: 1.4;
+    }
+    .compare-item:last-child { border-bottom: none; }
+
+    .compare-item::before {
+      content: '–';
+      color: var(--rule);
+      flex-shrink: 0;
+    }
+
+    .compare-col.highlight .compare-item::before {
+      content: '✓';
+      color: var(--bronze);
+    }
+
+    /* ===================== */
+    /* SLIDE 4 — 3 Principles */
+    /* ===================== */
+    .principles {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      flex: 1;
+      margin-top: 8px;
+    }
+
+    .principle-card {
+      background: white;
+      border: 1px solid var(--rule);
+      border-radius: 10px;
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .principle-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 52px;
+      font-weight: 700;
+      color: var(--rule);
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+
+    .principle-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 10px;
+    }
+
+    .principle-desc {
+      font-size: 13px;
+      color: var(--mid);
+      line-height: 1.6;
+      flex: 1;
+    }
+
+    .principle-tag {
+      display: inline-block;
+      margin-top: 16px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--bronze);
+      background: rgba(176,125,58,0.08);
+      padding: 4px 10px;
+      border-radius: 99px;
+      align-self: flex-start;
+    }
+
+    /* ===================== */
+    /* SLIDE 5 — /go command */
+    /* ===================== */
+    .go-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      flex: 1;
+      margin-top: 8px;
+    }
+
+    .go-col {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .go-col-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #bbb;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .go-col-label.good { color: var(--bronze); }
+
+    .code-block {
+      background: var(--dark);
+      border-radius: 8px;
+      padding: 20px 20px;
+      font-family: 'DM Mono', 'Courier New', monospace;
+      font-size: 12px;
+      color: rgba(245,242,236,0.8);
+      line-height: 1.7;
+      flex: 1;
+    }
+
+    .code-block .comment { color: rgba(245,242,236,0.35); }
+    .code-block .keyword { color: var(--bronze-light); font-weight: 600; }
+    .code-block .value { color: #a8d5b5; }
+
+    /* ===================== */
+    /* SLIDE 6 — 5 Steps     */
+    /* ===================== */
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      flex: 1;
+      margin-top: 8px;
+    }
+
+    .step-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      background: white;
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      padding: 16px 20px;
+    }
+
+    .step-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--bronze);
+      line-height: 1;
+      flex-shrink: 0;
+      width: 28px;
+    }
+
+    .step-content strong {
+      display: block;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 3px;
+    }
+
+    .step-content span {
+      font-size: 13px;
+      color: var(--mid);
+    }
+
+    /* ===================== */
+    /* SLIDE 7 — Case Study  */
+    /* ===================== */
+    .case-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 24px;
+      flex: 1;
+      margin-top: 8px;
+    }
+
+    .case-left {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .case-card {
+      background: white;
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      padding: 16px 20px;
+    }
+
+    .case-card-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--bronze);
+      margin-bottom: 6px;
+    }
+
+    .case-card-text {
+      font-size: 13px;
+      color: var(--mid);
+      line-height: 1.5;
+    }
+
+    .case-right {
+      background: var(--dark);
+      border-radius: 10px;
+      padding: 28px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .case-step {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+
+    .case-step-num {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(176,125,58,0.25);
+      border: 1px solid rgba(176,125,58,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--bronze-light);
+      flex-shrink: 0;
+    }
+
+    .case-step-text {
+      font-size: 13px;
+      color: rgba(245,242,236,0.7);
+      line-height: 1.5;
+      padding-top: 3px;
+    }
+
+    .case-step-text strong {
+      color: var(--cream);
+      font-weight: 600;
+    }
+
+    /* ===================== */
+    /* SLIDE 8 — Tool Compare */
+    /* ===================== */
+    .tool-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      flex: 1;
+      margin-top: 8px;
+    }
+
+    .tool-col {
+      background: white;
+      border: 1px solid var(--rule);
+      border-radius: 10px;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .tool-col.featured { border-color: var(--bronze); background: #FBF7F0; }
+
+    .tool-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 4px;
+    }
+
+    .tool-maker {
+      font-size: 11px;
+      color: #aaa;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .tool-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--rule);
+      font-size: 13px;
+    }
+
+    .tool-row:last-child { border-bottom: none; }
+
+    .tool-row-key { color: var(--mid); }
+    .tool-row-val { font-weight: 500; color: var(--dark); text-align: right; max-width: 60%; }
+    .tool-row-val.bronze { color: var(--bronze); }
+
+    /* ===================== */
+    /* SLIDE 9 — Upgrade path */
+    /* ===================== */
+    .path-steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      flex: 1;
+      margin-top: 8px;
+      align-items: stretch;
+    }
+
+    .path-card {
+      background: white;
+      border: 1px solid var(--rule);
+      border-radius: 10px;
+      padding: 24px 20px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .path-card::after {
+      content: '→';
+      position: absolute;
+      right: -14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--rule);
+      font-size: 18px;
+      z-index: 1;
+    }
+
+    .path-card:last-child::after { display: none; }
+
+    .path-stage {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--bronze);
+      margin-bottom: 12px;
+    }
+
+    .path-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 10px;
+      line-height: 1.3;
+    }
+
+    .path-desc {
+      font-size: 12px;
+      color: var(--mid);
+      line-height: 1.55;
+      flex: 1;
+    }
+
+    /* ===================== */
+    /* SLIDE 10 — End        */
+    /* ===================== */
+    .s10 {
+      flex-direction: row;
+      padding: 0;
+    }
+
+    .s10-left {
+      width: 48%;
+      background: var(--dark);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 72px 60px;
+    }
+
+    .s10-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 48px;
+      font-weight: 700;
+      color: var(--cream);
+      line-height: 1.1;
+      margin-bottom: 24px;
+    }
+
+    .s10-sub {
+      font-size: 15px;
+      color: rgba(245,242,236,0.5);
+      line-height: 1.65;
+    }
+
+    .s10-right {
+      flex: 1;
+      background: var(--cream);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 64px 56px;
+      gap: 20px;
+    }
+
+    .s10-action {
+      background: white;
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      padding: 18px 20px;
+    }
+
+    .s10-action-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--bronze);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .s10-action-text {
+      font-size: 14px;
+      color: var(--mid);
+      line-height: 1.5;
+    }
+
+    .s10-action-text strong {
+      display: block;
+      font-size: 15px;
+      color: var(--dark);
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+
+    /* Bronze accent bar at bottom of certain slides */
+    .accent-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(to right, var(--bronze) 0%, transparent 100%);
+    }
+  </style>
+</head>
+<body>
+
+<div class="deck">
+
+  <!-- ===================== SLIDE 1 — Title ===================== -->
+  <div class="slide active s1">
+    <div class="s1-left">
+      <div class="s1-eyebrow">Module 2.7 — Agentic Engineering</div>
+      <div class="s1-heading">从氛围编程<br>到 Agentic<br>Engineering</div>
+      <div class="s1-sub">你已经会用 AI 写代码了。<br>这一步，让它真正替你工作。</div>
+    </div>
+    <div class="s1-right">
+      <div class="s1-grid">
+        <div class="s1-pill"><strong>受众</strong>已在用 AI 编程的人</div>
+        <div class="s1-pill"><strong>核心升级</strong>从对话驱动到目标驱动</div>
+        <div class="s1-pill"><strong>案例</strong>Climate Dossier（真实项目）</div>
+        <div class="s1-pill"><strong>工具</strong>Claude Code / OpenAI Codex</div>
+      </div>
+      <div class="s1-author">Tina Huang · 2026</div>
+    </div>
+    <div class="accent-bar"></div>
+  </div>
+
+  <!-- ===================== SLIDE 2 — Problem ===================== -->
+  <div class="slide">
+    <div class="slide-inner">
+      <div class="slide-label">问题识别</div>
+      <div class="slide-title">AI 每五分钟问你一次，说明你还在用错误的方式</div>
+      <div class="slide-rule"></div>
+      <div class="slide-body">
+        <div class="s2-symptoms">
+          <div class="symptom-row">
+            <div class="symptom-icon">🔔</div>
+            <div class="symptom-text">
+              <strong>被打断式协作</strong>
+              <span>Claude 做一步、问你一步。你是监控员，不是工程师。</span>
+            </div>
+          </div>
+          <div class="symptom-row">
+            <div class="symptom-icon">🌀</div>
+            <div class="symptom-text">
+              <strong>目标在对话中漂移</strong>
+              <span>每一轮 back-and-forth，原始目标都在悄悄变形。结果"对了"，但不是你要的那个"对"。</span>
+            </div>
+          </div>
+          <div class="symptom-row">
+            <div class="symptom-icon">🎲</div>
+            <div class="symptom-text">
+              <strong>没有验收标准</strong>
+              <span>你靠"感觉"判断完成。没有客观标准，就没有真正的完成。</span>
+            </div>
+          </div>
+          <div class="symptom-row">
+            <div class="symptom-icon">🏗️</div>
+            <div class="symptom-text">
+              <strong>复杂度越高越失控</strong>
+              <span>小项目还好，一旦涉及多个文件和模块，氛围编程就会产生混乱，不是工程成果。</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="accent-bar"></div>
+  </div>
+
+  <!-- ===================== SLIDE 3 — Comparison ===================== -->
+  <div class="slide">
+    <div class="slide-inner">
+      <div class="slide-label">两种模式的本质差异</div>
+      <div class="slide-title">你的角色从"持续指令"变成"目标定义 + 结果评审"</div>
+      <div class="slide-rule"></div>
+      <div class="compare-grid">
+        <div class="compare-col">
+          <div class="compare-col-label grey">氛围编程 / Vibe Coding</div>
+          <div class="compare-col-title">感觉驱动</div>
+          <div class="compare-item">每 5 分钟来问你一次</div>
+          <div class="compare-item">靠持续输入维持方向</div>
+          <div class="compare-item">靠"感觉对了"判断完成</div>
+          <div class="compare-item">失败模式：目标漂移，无限循环</div>
+          <div class="compare-item">适合：一次性原型、探索</div>
+        </div>
+        <div class="compare-col highlight">
+          <div class="compare-col-label bronze">Agentic Engineering</div>
+          <div class="compare-col-title">目标驱动</div>
+          <div class="compare-item">启动时定义，完成时评审</div>
+          <div class="compare-item">靠预定义约束维持边界</div>
+          <div class="compare-item">靠验收清单判断完成</div>
+          <div class="compare-item">失败模式：目标定义不清</div>
+          <div class="compare-item">适合：生产功能、完整模块</div>
+        </div>
+      </div>
+    </div>
+    <div class="accent-bar"></div>
+  </div>
+
+  <!-- ===================== SLIDE 4 — 3 Principles ===================== -->
+  <div class="slide">
+    <div class="slide-inner">
+      <div class="slide-label">核心原则</div>
+      <div class="slide-title">三个原则决定了 AI 能不能真正替你工作</div>
+      <div class="slide-rule"></div>
+      <div class="principles">
+        <div class="principle-card">
+          <div class="principle-num">01</div>
+          <div class="principle-title">先定义目标，再开始执行</div>
+          <div class="principle-desc">在写第一行代码之前，写清楚 Goal（终态）、Constraints（边界）、Done When（验收标准）。AI 有了完整地图，才能自主导航。</div>
+          <div class="principle-tag">Goal-First</div>
+        </div>
+        <div class="principle-card">
+          <div class="principle-num">02</div>
+          <div class="principle-title">让 AI 自主运行，不要盯着它</div>
+          <div class="principle-desc">启动后，真正地离开。你是门控点，不是监控员。中途打断等于把 Agentic Engineering 退化回氛围编程。</div>
+          <div class="principle-tag">Autonomous Run</div>
+        </div>
+        <div class="principle-card">
+          <div class="principle-num">03</div>
+          <div class="principle-title">用验收标准评审，不靠感觉</div>
+          <div class="principle-desc">拿到结果时，对着 Done When 清单逐条核查。有测试就跑测试。评审的是"是否满足预定义条件"，不是"是否顺眼"。</div>
+          <div class="principle-tag">Criteria-Based Review</div>
+        </div>
+      </div>
+    </div>
+    <div class="accent-bar"></div>
+  </div>
+
+  <!-- ===================== SLIDE 5 — /go command ===================== -->
+  <div class="slide">
+    <div class="slide-inner">
+      <div class="slide-label">核心工具</div>
+      <div class="slide-title">/go 命令：把三要素打包成一个完整启动指令</div>
+      <div class="slide-rule"></div>
+      <div class="go-layout">
+        <div class="go-col">
+          <div class="go-col-label">❌ 氛围编程写法（会被打断 5 次）</div>
+          <div class="code-block">
+            <span class="comment">// Claude 拿到这个</span><br>
+            <span class="comment">// 会立刻来问你：</span><br>
+            <span class="comment">// "你想要什么样式？"</span><br>
+            <span class="comment">// "要不要改后端？"</span><br>
+            <span class="comment">// "多少个国家？"</span><br>
+            <br>
+            帮我给 NDC 模块加一个<br>
+            按国家筛选的功能，<br>
+            让它看起来好一点。
+          </div>
+        </div>
+        <div class="go-col">
+          <div class="go-col-label good">✓ Agentic Engineering 写法（一次跑完）</div>
+          <div class="code-block">
+            <span class="keyword">/go</span><br>
+            <br>
+            <span class="keyword">Goal:</span><br>
+            <span class="value">NDC 查询界面新增国家筛选器。</span><br>
+            <span class="value">默认"全部国家"，选后只返回该国结果。</span><br>
+            <br>
+            <span class="keyword">Constraints:</span><br>
+            - 不改 /brief endpoint 逻辑<br>
+            - 国家列表从 metadata 提取，不 hardcode<br>
+            - UI 与现有 ContextCard.tsx 一致<br>
+            - 不修改 eval 测试用例<br>
+            <br>
+            <span class="keyword">Done When:</span><br>
+            1. 筛选器选项来自实际 metadata<br>
+            2. 结果 citations 全属于所选国家<br>
+            3. npm run build 无报错
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="accent-bar"></div>
+  </div>
+
+  <!-- ===================== SLIDE 6 — 5 Steps ===================== -->
+  <div class="slide">
+    <div class="slide-inner">
+      <div class="slide-label">操作流程</div>
+      <div class="slide-title">每一个 Agentic 任务都走这五步</div>
+      <div class="slide-rule"></div>
+      <div class="steps">
+        <div class="step-row">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>任务分解</strong>
+            <span>把大目标拆成 2–4 个独立任务块。每块有自己的开始状态和验收标准，20–40 分钟可完成。</span>
+          </div>
+        </div>
+        <div class="step-row">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>写 /go 启动指令</strong>
+            <span>填入 Goal + Constraints + Done When。避免"让它更好""优化一下"这类模糊措辞。</span>
+          </div>
+        </div>
+        <div class="step-row">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>设置门控规则</strong>
+            <span>告诉 Claude 什么情况才来问你（只有三种：歧义 / 破坏性操作 / 硬性技术阻断）。其余自行决策。</span>
+          </div>
+        </div>
+        <div class="step-row">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <strong>启动，然后离开</strong>
+            <span>字面意义上的离开。你是门控点，不是监控员。坐着盯着它跑，等于自己破坏了这套系统。</span>
+          </div>
+        </div>
+        <div class="step-row">
+          <div class="step-num">5</div>
+          <div class="step-content">
+            <strong>对照 Done When 评审</strong>
+            <span>逐条核查验收标准，跑测试，看 git diff 范围是否合理。有问题就修正 Goal 定义，重新启动。</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="accent-bar"></div>
+  </div>
+
+  <!-- ===================== SLIDE 7 — Case Study ===================== -->
+  <div class="slide">
+    <div class="slide-inner">
+      <div class="slide-label">真实案例</div>
+      <div class="slide-title">Climate Dossier 证明 PRD + Eval + 门控可以让 AI 工程化运行</div>
+      <div class="slide-rule"></div>
+      <div class="case-grid">
+        <div class="case-left">
+          <div class="case-card">
+            <div class="case-card-label">项目</div>
+            <div class="case-card-text">双语 RAG 气候知识库，覆盖 IPCC AR6、SBTi 标准、G20 NDC 三个模块，含完整引用和战略解读层。</div>
+          </div>
+          <div class="case-card">
+            <div class="case-card-label">评估层</div>
+            <div class="case-card-text">25 个 golden test cases，25/25 passing。每个新模块必须先写测试，测试通过才算完成。</div>
+          </div>
+          <div class="case-card">
+            <div class="case-card-label">核心原则</div>
+            <div class="case-card-text">PRD → CLAUDE.md → eval 用例 → 构建 → 评审。每一层都在收窄 AI 的决策空间，不是扩大它。</div>
+          </div>
+        </div>
+        <div class="case-right">
+          <div style="font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(176,125,58,0.8);margin-bottom:4px;">Agentic 工作流</div>
+          <div class="case-step">
+            <div class="case-step-num">1</div>
+            <div class="case-step-text"><strong>PRD.md 定义目标</strong> — 4 个 Must-Have，技术限制，用户画像。代码还没开始写。</div>
+          </div>
+          <div class="case-step">
+            <div class="case-step-num">2</div>
+            <div class="case-step-text"><strong>CLAUDE.md 固化约束</strong> — 不用 Vercel，不用 Google Fonts，LLM 选型，门控规则。Claude 每次启动都继承这些决定。</div>
+          </div>
+          <div class="case-step">
+            <div class="case-step-num">3</div>
+            <div class="case-step-text"><strong>先写 eval，再构建</strong> — 测试用例就是 Done When。NDC 模块：8 条 eval 用例写好后才开始 ingestion。</div>
+          </div>
+          <div class="case-step">
+            <div class="case-step-num">4</div>
+            <div class="case-step-text"><strong>Staging → Prod 门控</strong> — dev DB 跑通 eval 才能 promote 到 prod。破坏性操作有结构化门控。</div>
+          </div>
+          <div class="case-step">
+            <div class="case-step-num">5</div>
+            <div class="case-step-text"><strong>一行命令评审</strong> — <code style="font-size:11px;color:rgba(245,242,236,0.6);">python eval/run_eval.py</code> 跑完，25/25 pass = 完成。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="accent-bar"></div>
+  </div>
+
+  <!-- ===================== SLIDE 8 — Tool Comparison ===================== -->
+  <div class="slide">
+    <div class="slide-inner">
+      <div class="slide-label">工具选择</div>
+      <div class="slide-title">Claude Code 和 OpenAI Codex 各有适合的场景</div>
+      <div class="slide-rule"></div>
+      <div class="tool-grid">
+        <div class="tool-col featured">
+          <div class="tool-name">Claude Code</div>
+          <div class="tool-maker">Anthropic · CLI 工具</div>
+          <div class="tool-row">
+            <span class="tool-row-key">运行环境</span>
+            <span class="tool-row-val bronze">本地 CLI（你的机器）</span>
+          </div>
+          <div class="tool-row">
+            <span class="tool-row-key">配置系统</span>
+            <span class="tool-row-val bronze">CLAUDE.md（持久化上下文）</span>
+          </div>
+          <div class="tool-row">
+            <span class="tool-row-key">自定义命令</span>
+            <span class="tool-row-val bronze">可定义 skills（/go 等）</span>
+          </div>
+          <div class="tool-row">
+            <span class="tool-row-key">代码访问</span>
+            <span class="tool-row-val">读整个本地 codebase</span>
+          </div>
+          <div class="tool-row">
+            <span class="tool-row-key">最适合</span>
+            <span class="tool-row-val">本地开发 + 复杂项目规范</span>
+          </div>
+        </div>
+        <div class="tool-col">
+          <div class="tool-name">Codex</div>
+          <div class="tool-maker">OpenAI · Cloud Agent</div>
+          <div class="tool-row">
+            <span class="tool-row-key">运行环境</span>
+            <span class="tool-row-val">云端沙箱（OpenAI 服务器）</span>
+          </div>
+          <div class="tool-row">
+            <span class="tool-row-key">配置系统</span>
+            <span class="tool-row-val">无等价持久化配置</span>
+          </div>
+          <div class="tool-row">
+            <span class="tool-row-key">并行能力</span>
+            <span class="tool-row-val">支持多个任务同时运行</span>
+          </div>
+          <div class="tool-row">
+            <span class="tool-row-key">代码访问</span>
+            <span class="tool-row-val">连接 GitHub repo（云端）</span>
+          </div>
+          <div class="tool-row">
+            <span class="tool-row-key">最适合</span>
+            <span class="tool-row-val">GitHub-first + 并行任务场景</span>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:16px;font-size:13px;color:var(--mid);">💡 工具会变，工程思维不会。Goal + Constraints + Done When 的框架适用于任何 agentic 工具。</div>
+    </div>
+    <div class="accent-bar"></div>
+  </div>
+
+  <!-- ===================== SLIDE 9 — Upgrade Path ===================== -->
+  <div class="slide">
+    <div class="slide-inner">
+      <div class="slide-label">升级路径</div>
+      <div class="slide-title">Agentic Engineering 分四个阶段，你今天就可以从第一阶段开始</div>
+      <div class="slide-rule"></div>
+      <div class="path-steps">
+        <div class="path-card">
+          <div class="path-stage">阶段 1</div>
+          <div class="path-title">单任务 Agentic 运行</div>
+          <div class="path-desc">掌握 /go 模板。把一个任务写成 Goal + Constraints + Done When，让 Claude 跑完不打断。</div>
+        </div>
+        <div class="path-card">
+          <div class="path-stage">阶段 2</div>
+          <div class="path-title">项目级规范沉淀</div>
+          <div class="path-desc">建立项目 CLAUDE.md。把每一个重要决定实时写进去，让上下文在每次会话中自动继承。</div>
+        </div>
+        <div class="path-card">
+          <div class="path-stage">阶段 3</div>
+          <div class="path-title">可重复模块化流程</div>
+          <div class="path-desc">写 onboarding 协议和 eval harness。流程本身成为工程产出，任何新模块都可以按协议复制执行。</div>
+        </div>
+        <div class="path-card">
+          <div class="path-stage">阶段 4</div>
+          <div class="path-title">自动化闭环</div>
+          <div class="path-desc">接入 CI/CD。Eval 通过才允许 merge。你从工程执行者变成系统设计者。</div>
+        </div>
+      </div>
+    </div>
+    <div class="accent-bar"></div>
+  </div>
+
+  <!-- ===================== SLIDE 10 — End ===================== -->
+  <div class="slide s10">
+    <div class="s10-left">
+      <div class="s10-heading">你的工作<br>是定义目标<br>和评审结果</div>
+      <div class="s10-sub">其余的事，让 AI 去跑。<br>这就是 Agentic Engineering 的全部。</div>
+    </div>
+    <div class="s10-right">
+      <div style="font-size:12px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--bronze);margin-bottom:4px;">从今天开始的三件事</div>
+      <div class="s10-action">
+        <div class="s10-action-num">1</div>
+        <div class="s10-action-text">
+          <strong>写一个 /go 指令</strong>
+          把你下一个任务用 Goal + Constraints + Done When 的格式写出来，不要直接告诉 Claude"帮我做 X"。
+        </div>
+      </div>
+      <div class="s10-action">
+        <div class="s10-action-num">2</div>
+        <div class="s10-action-text">
+          <strong>启动后离开</strong>
+          不要坐着盯着它跑。去做别的事，30 分钟后回来评审结果。
+        </div>
+      </div>
+      <div class="s10-action">
+        <div class="s10-action-num">3</div>
+        <div class="s10-action-text">
+          <strong>建一份项目 CLAUDE.md</strong>
+          把你的第一个重要决定写进去。这是你的 AI 项目记忆系统的起点。
+        </div>
+      </div>
+    </div>
+    <div class="accent-bar"></div>
+  </div>
+
+</div><!-- /deck -->
+
+<!-- Nav -->
+<div class="nav">
+  <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)" disabled>← 上一张</button>
+  <div class="nav-counter" id="counter">1 / 10</div>
+  <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">下一张 →</button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  let current = 0;
+
+  function changeSlide(dir) {
+    slides[current].classList.remove('active');
+    current = Math.max(0, Math.min(slides.length - 1, current + dir));
+    slides[current].classList.add('active');
+    document.getElementById('counter').textContent = (current + 1) + ' / ' + slides.length;
+    document.getElementById('prevBtn').disabled = current === 0;
+    document.getElementById('nextBtn').disabled = current === slides.length - 1;
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') changeSlide(1);
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') changeSlide(-1);
+  });
+</script>
+
+</body>
+</html>

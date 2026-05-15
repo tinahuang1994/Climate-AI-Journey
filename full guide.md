@@ -101,6 +101,14 @@ This roadmap is designed to take you from an absolute beginner to a Systems Arch
 
     -   *Study Note:* [Advanced Claude Code: Harness Engineering](./02-Phase-2-Agents/07-claude-code-advanced-guide.md)
 
+-   **Module 2.7:** From Vibe Coding to Agentic Engineering
+
+    -   *Source:* Original — built from Climate Dossier real-world practice + 2026 Agentic Engineering research
+
+    -   *Study Note:* [从氛围编程到 Agentic Engineering](./02-Phase-2-Agents/08-agentic-engineering.md)
+
+    -   *Slides:* [Teaching Deck (HTML)](./02-Phase-2-Agents/08-agentic-engineering-slides.html)
+
 ### Phase 3: Data Architecture & Reliability
 
 -   **Module 3.1:** Vector Search & Open Book Exams (RAG)
@@ -268,6 +276,24 @@ Welcome to the Climate AI Engineering guide. Learning AI is like learning to man
 -   **The Crew:** You assign distinct Roles, Goals, and Backstories. For example, writing a climate report requires a Researcher Agent, an Outline Agent, a Writer Agent, and a Fact-Checker Agent.
 
 -   **Processes & Guardrails:** You must limit how many steps agents can take to prevent endless loops. Collaboration between agents mirrors how real corporate teams operate.
+
+**Module 2.7: From Vibe Coding to Agentic Engineering**
+
+*Original — based on Climate Dossier practice + 2026 industry research*
+
+**The Concept:** Vibe Coding (reacting to AI output step by step) hits a ceiling on any project with real complexity. Agentic Engineering is the upgrade: you define the goal, constraints, and acceptance criteria upfront, let Claude run autonomously, and review the result — not the process.
+
+**Key Learnings:**
+
+-   **The Core Shift:** You stop being a monitor and become a gate-keeper. Your job is defining the target and reviewing the output; the AI handles the execution.
+
+-   **The /go Command:** A goal-oriented launch template with three mandatory elements — Goal (what the end state looks like), Constraints (what not to touch), and Done When (objective, checkable criteria). A well-written /go prompt lets Claude run for 30 minutes without interrupting you.
+
+-   **The Interrupt Policy:** You define in advance the only three conditions under which Claude should pause: genuine ambiguity, a destructive operation not mentioned in the task, or a hard technical blocker. Everything else, it decides on its own and documents its reasoning.
+
+-   **Eval Harness as Done When:** In the Climate Dossier case study, every new module required an eval test suite before construction began. Tests defined "done." Running `python eval/run_eval.py` and seeing 25/25 pass was the entire review process.
+
+-   **Claude Code vs OpenAI Codex:** Claude Code runs locally with a persistent CLAUDE.md config system and customizable skills (/go, /commit, etc.). OpenAI Codex runs in a cloud sandbox with native GitHub integration and parallel task support. Both support agentic workflows; the Goal + Constraints + Done When framework applies to either.
 
 **Phase 3: Data Architecture & Reliability**
 
