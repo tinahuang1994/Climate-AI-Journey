@@ -70,7 +70,7 @@ Agentic Engineering 的工作结构分三层，你在 Module 2.6 已经建好了
 
 ```markdown
 ## Agentic Mode Rules
-- When given a goal-oriented task (prefixed with /go or structured with Goal/Constraints/Done When):
+- When given a goal-oriented task (structured with Goal/Constraints/Done When):
   run autonomously without asking for confirmation on intermediate steps.
   Only pause if: (1) two or more valid interpretations exist and the choice changes the outcome,
   (2) a destructive operation is needed that was not mentioned upfront,
@@ -89,24 +89,11 @@ Constraints: 不能碰什么、必须保留什么、技术限制
 Done When:   验收标准（可以客观核查的条件）
 ```
 
-**`/go` 命令的使用方式：**
+**`/goal` 命令的使用方式：**
 
-`/go` 是一个目标导向的启动模式。你把三要素打包成一个完整的启动指令，Claude 拿到后就开始自主运行，不再问琐碎问题。
+`/goal` 是 Claude Code 的内置命令（v2.1.139 引入），专门用于触发自主运行。你在命令后面跟一个**可验证的完成条件**，Claude 就会一直自主执行，直到这个条件满足为止。每轮执行结束后，有一个评估模型自动检查条件是否达成。
 
-你可以在项目的 `.claude/commands/` 文件夹中创建 `go.md` 来定义它：
-
-```markdown
-# /go — Goal-Oriented Launch
-
-When the user invokes /go, they are handing you a complete task definition.
-Parse it for:
-- Goal: what the end state should look like
-- Constraints: what to preserve, what not to touch
-- Done When: the acceptance criteria
-
-Run autonomously. Document your progress in a brief summary.
-Only interrupt if you hit a genuine blocker.
-```
+使用模式：先给 Claude 完整的上下文（Goal + Constraints），然后用 `/goal` 指定完成条件。
 
 **错误写法 vs 正确写法：**
 
@@ -118,27 +105,24 @@ Only interrupt if you hit a genuine blocker.
 
 ✅ Agentic Engineering 的写法（一次跑完）：
 ```
-/go
+# 背景
+Climate Dossier NDC 模块，React 前端，FastAPI 后端。
 
-Goal:
-在 NDC 模块的查询界面新增一个国家筛选器。
+# 目标
+在 NDC 查询界面新增国家筛选器。
 用户选择国家后，检索结果只返回该国的 NDC 内容。
 "全部国家"作为默认选项（不筛选）。
 
-Constraints:
+# 约束
 - 不改动 /brief endpoint 的逻辑，只改前端 + 检索层
 - 国家列表从现有 metadata 的 country 字段提取，不新增 hardcoded 列表
-- UI 风格与现有 sector selector 保持一致（参考 frontend/src/components/ContextCard.tsx）
+- UI 风格与现有 sector selector 一致（参考 frontend/src/components/ContextCard.tsx）
 - 不修改 eval 测试用例
 
-Done When:
-1. 筛选器渲染正确，选项来自实际 metadata
-2. 选中某国后，返回结果的 citations 全部属于该国
-3. 选"全部"时行为与现在一致
-4. npm run build 无报错
+/goal 筛选器渲染正确，选中某国后 citations 全属于该国，npm run build 无报错
 ```
 
-注意区别：正确写法让 Claude 知道**做什么、不能动什么、怎么算做完**，于是它可以一直跑到结束，不需要每隔几分钟来问你。
+注意最后一行：`/goal` 后面跟的是完成条件——一个可以客观核查的句子。Claude 会一直运行，直到这个条件成立。
 
 ### 第三层：自主运行 + 门控检查
 
@@ -188,29 +172,29 @@ Interrupt only if:
 任务 D：UI — 在 landing page 新增模块入口，通过 npm run build
 ```
 
-### Step 2：写一个好的 `/go` 启动指令
+### Step 2：写好上下文，用 `/goal` 触发自主运行
 
 **模板：**
 
 ```
-/go
+# 背景
+[当前状态，相关文件路径]
 
-Goal:
+# 目标
 [一句话描述终态，主语是"用户"或"系统"，动词是可观察的行为]
 
-Constraints:
+# 约束
 - [具体文件/功能/逻辑：不能改]
 - [技术限制：框架、API、格式]
 - [保留的行为：现有测试必须通过]
 
-Done When:
-1. [客观可核查的条件 1]
-2. [客观可核查的条件 2]
-3. [客观可核查的条件 3]
+# 参考文件
+- @[相关文件路径]
 
-Reference Files:
-- [如果有相关文件，用 @ 指向]
+/goal [完成条件的一句话描述，可以客观核查]
 ```
+
+说明：`/goal` 之前的部分是给 Claude 的上下文，`/goal` 后面是触发自主运行的完成条件。Claude 会一直运行，直到完成条件被满足。
 
 **会导致 Claude 反复来问你的措辞（避坑清单）：**
 
@@ -401,9 +385,9 @@ Agentic Engineering 是**工作流层**：它让 Claude 知道往哪里跑、跑
 
 一次完整的重新运行比无数次零碎修改更快。
 
-**Q：`/go` 是 Claude Code 的内置命令吗？**
+**Q：`/goal` 是 Claude Code 的内置命令吗？**
 
-不是内置命令，而是你自己定义的 skill（自定义斜杠命令）。在项目根目录下创建 `.claude/commands/go.md`，Claude Code 就会识别 `/go`。你也可以不叫 `/go`，叫任何名字。这份指南用 `/go` 作为目标导向启动模式的代称。
+是的，`/goal` 是 Claude Code 的内置命令（v2.1.139 引入），不需要自己创建。使用方式：`/goal` 后面跟一个可以客观验证的完成条件（例如：`/goal all tests pass and npm run build succeeds`）。Claude 会自主运行并在每轮结束后自动检查条件，直到条件满足为止。
 
 **Q：如果项目很小，有必要这样做吗？**
 
@@ -415,7 +399,7 @@ Agentic Engineering 是**工作流层**：它让 Claude 知道往哪里跑、跑
 
 | 阶段 | 能力 | 对应工具 |
 |---|---|---|
-| 阶段 1 | 单任务 agentic 运行 | `/go` 模板 + 门控规则 |
+| 阶段 1 | 单任务 agentic 运行 | `/goal` 命令 + 结构化上下文 + 门控规则 |
 | 阶段 2 | 项目级规范沉淀 | 项目 CLAUDE.md — 让每次会话继承决策 |
 | 阶段 3 | 可重复模块化流程 | Onboarding 协议 + Eval Harness |
 | 阶段 4 | 自动化闭环 | CI/CD 集成（eval 跑通才允许 merge） |
@@ -424,26 +408,24 @@ Agentic Engineering 是**工作流层**：它让 Claude 知道往哪里跑、跑
 
 ## 附录：模板库
 
-### `/go` 启动模板（可直接复制）
+### `/goal` 启动模板（可直接复制）
 
 ```
-/go
+# 背景
+[当前状态描述]
 
-Goal:
+# 目标
 [一句话终态描述]
 
-Constraints:
+# 约束
 - [不能动的文件或功能]
 - [技术限制]
 - [必须保留的行为]
 
-Done When:
-1. [可观察条件 1]
-2. [可观察条件 2]
-3. [可观察条件 3]
-
-Reference Files:
+# 参考文件
 - @[相关文件路径]
+
+/goal [完成条件的一句话，可以客观核查]
 ```
 
 ### 门控规则模板（放入 CLAUDE.md）
