@@ -30,8 +30,8 @@
 
 1. **没有终点定义**：如果你没有说清楚"完成"是什么样的，这个循环就永远不会结束。
 2. **AI 在驱动你**：每一轮对话，你都在响应 AI 给你的输出，而不是你在主导方向。
-3. **上下文持续损耗**：每次你说"不对，换一种方式"，原始目标都在偷偷漂移。
-4. **可验证性为零**：你"感觉"对了，但没有办法证明它是对的。
+3. **原始意图一点一点被稀释**：每次你说"不对，换一种方式"，原始目标都在偷偷漂移。
+4. **没有办法验证它是不是真的对了**：你"感觉"对了，但没有客观标准来检验。
 
 这在小项目上可以用，在任何有复杂度的项目上都会失控。
 
@@ -66,7 +66,9 @@ Agentic Engineering 的工作结构分三层，你在 Module 2.6 已经建好了
 
 ### 第一层：全局环境（已有）
 
-你的 `~/.claude/CLAUDE.md` 定义了你的工作风格、设计原则、触发条件。这一层不需要改变，但可以加一行新的 agentic 触发规则：
+你的 `~/.claude/CLAUDE.md` 定义了你的工作风格、设计原则、触发条件。这一层不需要改变，但可以加一行新的 agentic 触发规则。
+
+> **重要说明：** CLAUDE.md 是**上下文，不是强制配置**。Claude 把它当作背景信息来参考，而不是必须遵守的硬性规则——指令模糊或有冲突时，Claude 可能不会按你写的来。写得越具体、越清晰，它遵守的可能性就越高。
 
 ```markdown
 ## Agentic Mode Rules
@@ -91,7 +93,7 @@ Done When:   验收标准（可以客观核查的条件）
 
 **`/goal` 命令的使用方式：**
 
-`/goal` 是 Claude Code 的内置命令（v2.1.139 引入），专门用于触发自主运行。你在命令后面跟一个**可验证的完成条件**，Claude 就会一直自主执行，直到这个条件满足为止。每轮执行结束后，有一个评估模型自动检查条件是否达成。
+`/goal` 是 Claude Code 的内置命令，专门用于触发自主运行。你在命令后面跟一个**可验证的完成条件**，Claude 就会在每轮执行结束后自行判断条件是否达成，不满足就继续跑，直到条件成立为止。
 
 使用模式：先给 Claude 完整的上下文（Goal + Constraints），然后用 `/goal` 指定完成条件。
 
@@ -126,7 +128,7 @@ Climate Dossier NDC 模块，React 前端，FastAPI 后端。
 
 ### 第三层：自主运行 + 门控检查
 
-定义好任务后，设置两件事：
+"门控"就是你设定的关卡——Claude 只有在满足条件时才能推进到下一步，否则就停下来等你确认。定义好任务后，设置两件事：
 
 **门控规则（写在任务开头或项目 CLAUDE.md）：**
 ```
@@ -225,6 +227,8 @@ Otherwise, make a decision, document it in your summary, and keep running.
 
 为什么这一步重要？因为如果你坐在旁边盯着它跑，你会忍不住在它跑完之前就插手。这会打断它的运行流，也会让你陷回氛围编程的循环里。
 
+**长任务提示：** 如果任务预计跑很长时间，可以在会话快满之前输入 `/compact`，让 Claude 压缩上下文、腾出空间，继续跑完剩余任务。
+
 你在 Agentic Engineering 里扮演的角色是**门控点**，不是监控员。
 
 ### Step 5：评审与收尾
@@ -233,7 +237,7 @@ Otherwise, make a decision, document it in your summary, and keep running.
 
 ```
 1. 对照 Done When 清单，逐条验证
-2. 跑测试（如果有 eval harness：直接跑）
+2. 跑测试（如果有评估层（eval harness）：直接跑）
 3. 看 git diff — Claude 动了哪些文件？有没有超出范围？
 4. 如果有问题：修正 Goal/Constraints 定义，重新启动一次 — 不是逐行改代码
 ```
@@ -280,7 +284,7 @@ Climate Dossier 的第一步不是写代码，而是写 `PRD.md`。PRD 定义了
 
 ---
 
-### 案例 B：Eval Harness 即验收标准
+### 案例 B：评估层即验收标准
 
 在 Climate Dossier，每个新模块的工作流是固定的：
 
@@ -293,7 +297,7 @@ SBTi 模块：10 个 eval 用例，10/10 pass 后上线。
 NDC 模块：8 个 eval 用例，8/8 pass 后上线。
 三个模块合计 25 个 golden test cases，全部 passing。
 
-这就是 `/go` 里 `Done When` 的真实形态——一个可以机器执行的验收清单。
+这就是 `/goal` 完成条件的真实形态——一个可以机器执行的验收清单。
 
 ```bash
 # eval harness 用一行命令跑完验收
@@ -325,43 +329,31 @@ ingest to dev DB → 跑 eval → pass → promote to prod
 
 Climate Dossier 有一份 `module-onboarding.md`，定义了添加任何新模块的完整步骤：定义文档列表 → 配置 metadata schema → 写 eval → 运行 ingestion → 验证 chunk 数量 → 跑 eval → 通过后更新 CLAUDE.md。
 
-这就是一个**可重复的 `/go` 模板**。每次添加新模块，你不需要重新发明流程，只需要填入新模块的参数，然后让 Claude 按协议运行。
+这就是一个**可重复的 `/goal` 任务模板**。每次添加新模块，你不需要重新发明流程，只需要填入新模块的参数，然后让 Claude 按协议运行。
 
 这是 Agentic Engineering 的最高境界之一：**流程本身就是你最有价值的工程产出**，而不只是你写出来的代码。
 
 ---
 
-## Part 5：Claude Code vs OpenAI Codex
+## Part 5：选哪个工具？
 
-截至 2026 年 5 月，AI 编程工具市场有两个主要的 agentic 选手：Anthropic 的 Claude Code 和 OpenAI 的 Codex（2025 年重新发布的 cloud-based 编程 agent）。
+**工具会变，工程思维不会。** Goal + Constraints + Done When + 门控评审这套方法，可以在任何 agentic 工具上运行。本指南用 Claude Code，但如果你换成 OpenAI Codex 或者其他工具，核心方法完全不变。
 
-### 核心架构差异
+那工具选择有没有意义？有——但判断标准不是功能表，而是你的工作方式。
 
-| | Claude Code | OpenAI Codex |
-|---|---|---|
-| **运行环境** | 本地 CLI（跑在你的机器上） | 云端沙箱（跑在 OpenAI 的服务器上） |
-| **代码访问** | 读取你的整个本地 codebase | 连接到 GitHub repo（云端克隆） |
-| **配置系统** | CLAUDE.md（持久化项目规范） | 无等价配置文件 |
-| **并行能力** | 支持 sub-agent | 支持多个任务并行运行（云端沙箱） |
-| **自定义命令** | 可定义 skills（`/go`、`/commit` 等） | 无自定义命令系统 |
-| **本地工具** | 可直接调用本地 shell、工具链 | 运行在隔离沙箱，工具访问受限 |
+### 怎么选
 
-### 分别适合什么场景
+**用 Claude Code，如果：**
+- 你在本地开发（需要读写本地文件、跑本地服务器）
+- 你有复杂的项目规范需要跨会话持久化（CLAUDE.md 是为此设计的）
+- 你需要自定义工作流（skills、hooks）
 
-**Claude Code 更适合：**
-- 本地开发环境（需要读写本地文件、跑本地服务器）
-- 有复杂项目规范（CLAUDE.md 的价值在于持久化上下文）
-- 需要自定义 workflow（skills、hooks）
-- 在中国大陆以外部署的项目（API 直连）
+**用 OpenAI Codex，如果：**
+- 你的代码全在 GitHub，不在本地
+- 你需要同时跑多个独立任务（云端并行沙箱）
+- 你没有或不想维护本地开发环境
 
-**OpenAI Codex 更适合：**
-- GitHub-first 工作流（代码全在云端）
-- 需要同时跑多个独立任务（并行沙箱）
-- 没有本地开发环境的纯云端场景
-
-### 这份指南的工具选择
-
-本指南所有示例都基于 Claude Code。**Agentic Engineering 的核心原则（Goal + Constraints + Done When + 门控评审）与工具无关**，可以迁移到 Codex 或任何其他 agentic 工具。工具会变，工程思维不会。
+两个工具都在快速演进，功能差距会不断变化。今天的决策依据应该是工作方式，不是功能清单。
 
 ---
 
@@ -387,7 +379,7 @@ Agentic Engineering 是**工作流层**：它让 Claude 知道往哪里跑、跑
 
 **Q：`/goal` 是 Claude Code 的内置命令吗？**
 
-是的，`/goal` 是 Claude Code 的内置命令（v2.1.139 引入），不需要自己创建。使用方式：`/goal` 后面跟一个可以客观验证的完成条件（例如：`/goal all tests pass and npm run build succeeds`）。Claude 会自主运行并在每轮结束后自动检查条件，直到条件满足为止。
+是的，`/goal` 是 Claude Code 的内置命令，不需要自己创建。使用方式：`/goal` 后面跟一个可以客观验证的完成条件（例如：`/goal all tests pass and npm run build succeeds`）。Claude 会自主运行，在每轮结束后自行判断条件是否达成，直到满足为止。
 
 **Q：如果项目很小，有必要这样做吗？**
 
@@ -401,7 +393,7 @@ Agentic Engineering 是**工作流层**：它让 Claude 知道往哪里跑、跑
 |---|---|---|
 | 阶段 1 | 单任务 agentic 运行 | `/goal` 命令 + 结构化上下文 + 门控规则 |
 | 阶段 2 | 项目级规范沉淀 | 项目 CLAUDE.md — 让每次会话继承决策 |
-| 阶段 3 | 可重复模块化流程 | Onboarding 协议 + Eval Harness |
+| 阶段 3 | 可重复模块化流程 | Onboarding 协议 + 评估层 |
 | 阶段 4 | 自动化闭环 | CI/CD 集成（eval 跑通才允许 merge） |
 
 ---
@@ -447,6 +439,6 @@ Otherwise: decide, document your reasoning, and keep running.
 - [ ] Done When 条目 2：通过 / 失败
 - [ ] Done When 条目 3：通过 / 失败
 - [ ] git diff 范围合理，没有超出 Constraints
-- [ ] 测试通过（或 eval harness pass）
+- [ ] 测试通过（或评估层 pass）
 - [ ] 没有新引入的依赖或架构变化
 ```

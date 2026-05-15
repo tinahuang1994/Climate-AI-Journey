@@ -276,7 +276,7 @@
     .two-col {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 20px;
+      gap: 28px;
       flex: 1;
       align-items: stretch;
     }
@@ -312,7 +312,7 @@
     </div>
     <div class="slide-body" style="justify-content:center;gap:0;">
       <div class="eyebrow">Module 2.7 — Phase 2C: Advanced Agentic Engineering</div>
-      <div style="font-family:'Cormorant Garamond',serif;font-size:64px;font-weight:300;color:var(--dark);line-height:1.05;margin-bottom:16px;">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:72px;font-weight:300;color:var(--dark);line-height:1.05;margin-bottom:16px;">
         From Vibe Coding to Agentic Engineering
       </div>
       <div style="font-family:'Songti SC','STSong',serif;font-size:18px;font-weight:400;color:var(--mid);margin-bottom:28px;">
@@ -352,7 +352,7 @@
         </div>
       </div>
     </div>
-    <div class="counter">2 / 10</div>
+    <div class="counter">2 / 9</div>
   </div>
 
   <!-- ══════════════════════════════════════════ -->
@@ -402,7 +402,7 @@
         </table>
       </div>
     </div>
-    <div class="counter">3 / 10</div>
+    <div class="counter">3 / 9</div>
   </div>
 
   <!-- ══════════════════════════════════════════ -->
@@ -438,7 +438,7 @@
 
       </div>
     </div>
-    <div class="counter">4 / 10</div>
+    <div class="counter">4 / 9</div>
   </div>
 
   <!-- ══════════════════════════════════════════ -->
@@ -449,7 +449,7 @@
       <div class="eyebrow">核心工具</div>
       <div class="slide-title">/goal 是 Claude Code 内置命令，触发 AI 自主运行直到条件达成</div>
       <div class="divider"></div>
-      <div class="content two-col" style="gap:16px;">
+      <div class="content two-col">
 
         <div class="col-stack">
           <div style="font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--bronze);padding-bottom:8px;border-bottom:1px solid var(--border);">❌ 氛围编程写法（会被打断 5 次）</div>
@@ -473,20 +473,19 @@
             <span class="val">默认"全部"，选后只返回该国结果。</span><br>
             <br>
             <span class="dim"># 约束</span><br>
-            - 不改 /brief endpoint 逻辑<br>
-            - 国家列表从 metadata 提取<br>
-            - UI 与 ContextCard.tsx 一致<br>
-            - 不修改 eval 用例<br>
+            - 不改已有的查询逻辑<br>
+            - 国家列表从现有数据提取<br>
+            - 界面风格与现有筛选器一致<br>
+            - 不改动已有的测试用例<br>
             <br>
-            <span class="kw">/goal</span> <span class="val">筛选器渲染正确，</span><br>
-            <span class="val">citations 全属于所选国家，</span><br>
-            <span class="val">npm run build 无报错</span>
+            <span class="kw">/goal</span> <span class="val">筛选器正常显示，</span><br>
+            <span class="val">选择某国后只返回该国结果</span>
           </div>
         </div>
 
       </div>
     </div>
-    <div class="counter">5 / 10</div>
+    <div class="counter">5 / 9</div>
   </div>
 
   <!-- ══════════════════════════════════════════ -->
@@ -534,7 +533,7 @@
             <div class="step-num">4</div>
             <div>
               <div class="card-title">启动，然后离开</div>
-              <div class="body-text">字面意义上的离开。你是门控点，不是监控员。坐着盯着它跑，等于自己破坏了这套系统。</div>
+              <div class="body-text">字面意义上的离开。你是审批者，不是监工——只在关键节点做决定，其余时间让 AI 自己跑完。</div>
             </div>
           </div>
         </div>
@@ -551,7 +550,7 @@
 
       </div>
     </div>
-    <div class="counter">6 / 10</div>
+    <div class="counter">6 / 9</div>
   </div>
 
   <!-- ══════════════════════════════════════════ -->
@@ -571,7 +570,7 @@
           </div>
           <div class="card">
             <div class="card-title">评估层</div>
-            <div class="body-text">25 个 golden test cases（7 IPCC + 10 SBTi + 8 NDC），25/25 passing。每个新模块先写测试，测试通过才算完成。</div>
+            <div class="body-text">25 道自动验收测试（7 IPCC + 10 SBTi + 8 NDC），全部通过。每个新模块先写测试，AI 答对了才算完成。</div>
           </div>
           <div class="card" style="flex:1;">
             <div class="card-title">核心原则</div>
@@ -593,11 +592,11 @@
             </div>
             <div class="step-row">
               <div class="step-num">3</div>
-              <div class="body-text"><strong style="color:var(--dark);">先写 eval，再构建</strong> — NDC 模块：8 条测试用例写好后才开始 ingestion。测试用例就是验收标准。</div>
+              <div class="body-text"><strong style="color:var(--dark);">先写验收标准，再开始构建</strong> — NDC 模块：8 道测试题写好后才动手。通过率就是完成条件。</div>
             </div>
             <div class="step-row">
               <div class="step-num">4</div>
-              <div class="body-text"><strong style="color:var(--dark);">Staging → Prod 门控</strong> — dev 跑通 eval 才能 promote 到 prod。破坏性操作有结构化门控。</div>
+              <div class="body-text"><strong style="color:var(--dark);">先在草稿环境通过测试，再正式上线</strong> — 测试不过，不允许发布。有结构化的审批节点。</div>
             </div>
             <div class="step-row">
               <div class="step-num">5</div>
@@ -609,61 +608,11 @@
 
       </div>
     </div>
-    <div class="counter">7 / 10</div>
+    <div class="counter">7 / 9</div>
   </div>
 
   <!-- ══════════════════════════════════════════ -->
-  <!-- SLIDE 8 — TOOL COMPARISON                 -->
-  <!-- ══════════════════════════════════════════ -->
-  <div class="slide">
-    <div class="slide-body">
-      <div class="eyebrow">工具选择</div>
-      <div class="slide-title">Claude Code 和 OpenAI Codex 各有适合的场景</div>
-      <div class="divider"></div>
-      <div class="content two-col">
-
-        <div style="display:flex;flex-direction:column;height:100%;">
-          <div class="gate-header" style="color:var(--bronze);">Claude Code — Anthropic</div>
-          <div class="gate-body" style="flex:1;display:flex;flex-direction:column;gap:0;">
-            <table class="tbl" style="flex:1;">
-              <tbody>
-                <tr><td style="color:var(--mid);width:40%;">运行环境</td><td style="color:var(--dark);font-weight:600;">本地 CLI（你的机器）</td></tr>
-                <tr><td style="color:var(--mid);">配置系统</td><td style="color:var(--dark);font-weight:600;">CLAUDE.md 持久化上下文</td></tr>
-                <tr><td style="color:var(--mid);">自主运行命令</td><td><code style="font-size:11px;color:var(--bronze);">/goal</code> 内置命令</td></tr>
-                <tr><td style="color:var(--mid);">自定义命令</td><td>Skills（/commit 等）</td></tr>
-                <tr><td style="color:var(--mid);">代码访问</td><td>整个本地 codebase</td></tr>
-                <tr><td style="color:var(--mid);border-bottom:none;">最适合</td><td style="border-bottom:none;">本地开发 + 复杂项目规范</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div style="display:flex;flex-direction:column;height:100%;">
-          <div class="gate-header" style="color:var(--mid);">OpenAI Codex — OpenAI</div>
-          <div class="gate-body" style="flex:1;display:flex;flex-direction:column;gap:0;">
-            <table class="tbl" style="flex:1;">
-              <tbody>
-                <tr><td style="color:var(--mid);width:40%;">运行环境</td><td>云端沙箱（OpenAI 服务器）</td></tr>
-                <tr><td style="color:var(--mid);">配置系统</td><td>无等价持久化配置</td></tr>
-                <tr><td style="color:var(--mid);">自主运行</td><td>任务驱动，云端执行</td></tr>
-                <tr><td style="color:var(--mid);">并行能力</td><td>多个任务同时在沙箱运行</td></tr>
-                <tr><td style="color:var(--mid);">代码访问</td><td>连接 GitHub repo（云端）</td></tr>
-                <tr><td style="color:var(--mid);border-bottom:none;">最适合</td><td style="border-bottom:none;">GitHub-first + 并行任务场景</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-      </div>
-      <div style="margin-top:12px;" class="body-text">
-        工具会变，工程思维不会。目标 + 约束 + 验收标准的框架适用于任何 agentic 工具。
-      </div>
-    </div>
-    <div class="counter">8 / 10</div>
-  </div>
-
-  <!-- ══════════════════════════════════════════ -->
-  <!-- SLIDE 9 — UPGRADE PATH                    -->
+  <!-- SLIDE 8 — UPGRADE PATH                    -->
   <!-- ══════════════════════════════════════════ -->
   <div class="slide">
     <div class="slide-body">
@@ -702,31 +651,34 @@
 
       </div>
     </div>
-    <div class="counter">9 / 10</div>
+    <div class="counter">8 / 9</div>
   </div>
 
   <!-- ══════════════════════════════════════════ -->
-  <!-- SLIDE 10 — CLOSING                        -->
+  <!-- SLIDE 9 — CLOSING                         -->
   <!-- ══════════════════════════════════════════ -->
   <div class="slide">
     <div style="position:absolute;inset:0;background:var(--cream);">
       <div style="position:absolute;bottom:-80px;left:-80px;width:360px;height:360px;background:radial-gradient(circle,rgba(176,125,58,0.08) 0%,transparent 70%);pointer-events:none;"></div>
     </div>
-    <div class="slide-body" style="flex-direction:row;gap:0;padding:0;">
+    <div class="slide-body" style="padding-bottom:20px;">
+      <div class="slide-title">从这三步开始，你就已经在做 Agentic Engineering 了</div>
+      <div class="divider"></div>
+      <div style="display:grid;grid-template-columns:44% 1fr;gap:0;flex:1;min-height:0;">
 
       <!-- Left -->
-      <div style="width:44%;padding:52px 48px;display:flex;flex-direction:column;justify-content:center;border-right:1px solid var(--border);">
+      <div style="padding:0 40px 0 0;display:flex;flex-direction:column;justify-content:center;border-right:1px solid var(--border);">
         <div class="eyebrow">核心结论</div>
-        <div style="font-family:'Songti SC','STSong',serif;font-size:26px;font-weight:400;color:var(--dark);line-height:1.45;margin-bottom:20px;">
+        <div style="font-family:'Songti SC','STSong',serif;font-size:24px;font-weight:400;color:var(--dark);line-height:1.5;margin-bottom:16px;">
           你的工作是<br>定义目标和评审结果。<br>其余的，让 AI 去跑。
         </div>
-        <div class="body-text" style="font-size:12px;">
+        <div class="body-text">
           这就是 Agentic Engineering 的全部。
         </div>
       </div>
 
       <!-- Right -->
-      <div style="flex:1;padding:44px 40px;display:flex;flex-direction:column;justify-content:center;gap:12px;">
+      <div style="padding:0 0 0 32px;display:flex;flex-direction:column;justify-content:center;gap:10px;">
         <div style="font-family:'Inter',sans-serif;font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--bronze);margin-bottom:4px;">从今天开始的三件事</div>
 
         <div class="callout">
@@ -739,14 +691,15 @@
           <div class="body-text">不要坐着盯着它跑。去做别的事，30 分钟后回来评审结果。</div>
         </div>
 
-        <div class="callout" style="flex:1;">
+        <div class="callout">
           <div class="card-title">建一份项目 CLAUDE.md</div>
-          <div class="body-text">把你的第一个重要决定写进去。这是你的 AI 项目记忆系统的起点。</div>
+          <div class="body-text">把你的第一个重要决定写进去。这是 AI 的长期记忆文件——每次启动都会继承。</div>
         </div>
       </div>
 
+      </div><!-- /grid -->
     </div>
-    <div class="counter">10 / 10</div>
+    <div class="counter">9 / 9</div>
   </div>
 
 </div><!-- /deck -->
@@ -762,7 +715,6 @@
   <button class="dot" onclick="goTo(6)"></button>
   <button class="dot" onclick="goTo(7)"></button>
   <button class="dot" onclick="goTo(8)"></button>
-  <button class="dot" onclick="goTo(9)"></button>
 </div>
 <div class="nav-btns">
   <button class="nav-btn" id="prevBtn" onclick="move(-1)" disabled>← Prev</button>
