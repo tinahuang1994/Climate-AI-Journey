@@ -1,7 +1,455 @@
+# From Vibe Coding to Agentic Engineering: A Practical Field Guide
+
+*Module 2.7 — 2C: Advanced Agentic Engineering*
+
+> **Chinese version below — 中文版本在下方**
+>
+> **Prerequisites:** This guide is a continuation of [Module 2.6 Harness Engineering](./07-claude-code-advanced-guide.md). Complete Module 2.6 first.
+>
+> ⚠️ **Decay disclaimer:** Claude Code iterates fast. Specific commands and features may have changed. The conceptual framework here is durable; verify operational details against [claude.ai/code](https://claude.ai/code) current documentation.
+
+---
+
+## Who This Is For
+
+You already use Claude Code. You have a global CLAUDE.md, project conventions, and you've built verified products with Harness Engineering.
+
+But you may still feel this: **Claude interrupts you every five minutes.** You're managing it, not directing it. Every back-and-forth drains your attention instead of advancing the project.
+
+This guide solves exactly that.
+
+The core upgrade in one sentence: **move from reactive prompting to goal-directed orchestration.** Define the goal, constraints, and acceptance criteria upfront — then let Claude run autonomously and review the output when it's done.
+
+---
+
+## Part 1: Why Vibe Coding Has a Ceiling
+
+### 1.1 The Structural Problem with Vibe Coding
+
+"Vibe Coding" means: you sense what you want, tell the AI, it gives you something, you say "that's not right, try again," and the loop continues.
+
+The problem isn't inefficiency — it's **structural**:
+
+1. **No definition of done:** If you haven't said what "finished" looks like, the loop never ends.
+2. **AI is driving you:** Every turn, you're responding to its output instead of directing the work.
+3. **Original intent erodes:** Each "no, do it differently" quietly drifts the goal from where you started.
+4. **No way to verify it's actually correct:** You "feel" like it's right, but there's no objective check.
+
+This works on small projects. On anything with real complexity, it spirals.
+
+### 1.2 What Agentic Engineering Is
+
+The core shift in Agentic Engineering: **you're the director, AI is the entire crew.**
+
+A director doesn't walk behind the camera mid-shoot to tell the cinematographer how to frame each shot. The director clarifies everything before the cameras roll — what the story is, what the style is, what the non-negotiable red lines are — then trusts the crew to execute.
+
+Applied to Claude Code:
+
+- **Before the cameras roll:** Define Goal, Constraints, and Done When
+- **During the shoot:** Claude runs autonomously; only genuine ambiguity warrants a pause
+- **After the wrap:** You review and accept — you don't proofread line by line
+
+### 1.3 Two Modes Side by Side
+
+| | Vibe Coding | Agentic Engineering |
+|---|---|---|
+| **Interaction frequency** | Every 5 minutes | Define at start, review at end |
+| **Your input** | Continuous instruction + instant feedback | Goal + Constraints + Done When |
+| **Claude's behavior** | Waits for your next instruction | Runs autonomously, pauses only on blockers |
+| **Definition of done** | You "feel" like it's close | Predefined acceptance checklist passes |
+| **Best for** | Prototypes, one-off tasks | Production features, full modules |
+| **Failure mode** | Goal drift, infinite loops | Poorly defined goal runs in the wrong direction |
+
+---
+
+## Part 2: Three-Layer Work Structure
+
+### Layer 1: Global Environment (Already in Place)
+
+Your `~/.claude/CLAUDE.md` defines your working style, design principles, and trigger conditions. This layer doesn't need to change — but you can add one new agentic trigger rule:
+
+> **Important:** CLAUDE.md is **context, not enforced configuration.** Claude treats it as background reference, not hard rules. When instructions are ambiguous or conflicting, Claude may not follow them exactly. The more specific and clear you write, the more likely it will comply.
+
+```markdown
+## Agentic Mode Rules
+- When given a goal-oriented task (structured with Goal/Constraints/Done When):
+  run autonomously without asking for confirmation on intermediate steps.
+  Only pause if: (1) two or more valid interpretations exist and the choice changes the outcome,
+  (2) a destructive operation is needed that was not mentioned upfront,
+  (3) a hard technical blocker prevents progress.
+```
+
+### Layer 2: Task Definition (The Critical Upgrade)
+
+This is the biggest divide between Agentic Engineering and Vibe Coding.
+
+**The three-element structure:**
+
+```
+Goal:        What you want (description of the end state)
+Constraints: What can't be touched, what must stay, technical limits
+Done When:   Acceptance criteria (objectively verifiable conditions)
+```
+
+**How to use the `/goal` command:**
+
+`/goal` is a Claude Code built-in command for triggering autonomous runs. You follow it with a **verifiable completion condition**. Claude runs until that condition is met, judging for itself at the end of each turn whether the condition is satisfied.
+
+Pattern: give Claude full context first (Goal + Constraints), then use `/goal` to specify the completion condition.
+
+**Wrong vs. right:**
+
+❌ Vibe Coding style (will get interrupted 5 times):
+```
+Help me add a new feature to the Climate Dossier NDC module,
+something like a country filter, and make the results look better.
+```
+
+✅ Agentic Engineering style (runs to completion):
+```
+# Context
+Climate Dossier NDC module. React frontend, FastAPI backend.
+
+# Goal
+Add a country filter to the NDC query interface.
+When a country is selected, retrieval returns only that country's NDC content.
+"All countries" is the default (no filter applied).
+
+# Constraints
+- Do not modify /brief endpoint logic — only change frontend + retrieval layer
+- Country list must be extracted from existing metadata country field, not hardcoded
+- UI style must match the existing sector selector (reference: frontend/src/components/ContextCard.tsx)
+- Do not modify eval test cases
+
+/goal filter renders correctly, selecting a country returns citations only from that country, npm run build passes with no errors
+```
+
+The last line is the completion condition — an objectively verifiable sentence. Claude runs until it's true.
+
+### Layer 3: Autonomous Run + Gate Review
+
+"Gates" are checkpoints you set — Claude can only proceed when a condition is met, otherwise it stops and waits for your confirmation. Once the task is defined, set two things:
+
+**Interrupt policy (put in task header or project CLAUDE.md):**
+```
+Interrupt only if:
+1. Two valid interpretations exist and the choice materially changes the output
+2. A destructive operation (delete, overwrite, schema change) was not mentioned in the task
+3. A hard blocker prevents any further progress
+```
+
+**Review framework (what you do when it's done):**
+
+Don't read the code line by line. Check against your `Done When` list:
+- Does every acceptance criterion pass?
+- Any unexpected side effects (broken tests, style changes)?
+- Review the git diff — did Claude touch anything outside its scope?
+
+---
+
+## Part 3: Step-by-Step Workflow
+
+### Step 1: Task Decomposition (Before Writing Any Code)
+
+Break a large goal into 2–4 independently runnable task blocks. Each block should:
+- Have a clear start state and end state
+- Complete in 20–40 minutes
+- Not depend on the intermediate state of another block
+
+**Example — adding a new module to Climate Dossier:**
+
+❌ Wrong decomposition (sequential dependencies, can't run independently):
+```
+Task 1: Download documents
+Task 2: Ingestion (depends on Task 1)
+Task 3: Write eval cases (depends on Task 2)
+Task 4: Adjust UI (depends on Task 3)
+```
+
+✅ Right decomposition (each block independently definable and verifiable):
+```
+Task A: Prepare corpus — finalize document list, write source metadata schema
+Task B: Ingestion — run ingest.py per module-onboarding.md, verify chunk count
+Task C: Eval — write 8 golden test cases, run them, confirm pass rate
+Task D: UI — add module entry to landing page, npm run build passes
+```
+
+### Step 2: Write Context, Trigger with `/goal`
+
+**Template:**
+
+```
+# Context
+[Current state, relevant file paths]
+
+# Goal
+[One sentence describing the end state — subject is "user" or "system," verb is observable]
+
+# Constraints
+- [Specific files/features/logic: do not modify]
+- [Technical limits: framework, API, format]
+- [Preserved behavior: existing tests must pass]
+
+# Reference Files
+- @[relevant file path]
+
+/goal [one sentence completion condition, objectively verifiable]
+```
+
+**Phrasing that causes Claude to keep interrupting (avoid list):**
+
+| Avoid | Why | Replace with |
+|---|---|---|
+| "make it look better" | No objective standard | "match the style of ContextCard.tsx" |
+| "optimize it" | Scope unclear | Specify what to optimize and target metric |
+| "something like X" | Forces Claude to guess | Point to a specific file: `@X.tsx` |
+| "if possible" | Gives Claude decision power | Say explicitly: yes or no |
+| "good enough" | No acceptance criterion | Write a Done When entry |
+
+### Step 3: Set the Interrupt Policy
+
+Declare in the task header or project CLAUDE.md:
+
+```markdown
+## Interrupt Policy
+Pause and ask only if:
+1. Ambiguity: two interpretations exist, each produces materially different output
+2. Destructive: action requires deleting/overwriting something not listed in Constraints
+3. Blocker: technical issue prevents further progress
+Otherwise, make a decision, document it in your summary, and keep running.
+```
+
+### Step 4: Run, Then Walk Away
+
+Literally walk away: get a glass of water, do something else.
+
+Why? Because if you sit and watch, you'll inevitably intervene before it finishes — which breaks its run flow and pulls you back into the vibe coding loop.
+
+**Long-task tip:** If the task is expected to run for a long time, type `/compact` before the session fills up. Claude will compress its context, free up space, and keep running through the remaining work.
+
+Your role in Agentic Engineering is **gatekeeper**, not monitor.
+
+### Step 5: Review and Close
+
+When you get the result, check in this order:
+
+```
+1. Verify each Done When item, one by one
+2. Run tests (if there's an eval harness: run it directly)
+3. Check git diff — what files did Claude touch? Anything outside scope?
+4. If there's a problem: fix the Goal/Constraints definition, restart — don't patch code line by line
+```
+
+---
+
+## Part 4: Case Study — Climate Dossier
+
+### Project Background
+
+Climate Dossier is a bilingual RAG climate knowledge base supporting natural language queries across three modules: IPCC AR6 (all three working groups), SBTi Science-Based Targets standards, and G20 NDC national climate commitments — with full citations and a "So What" strategic interpretation layer.
+
+Backend: FastAPI + LlamaIndex + ChromaDB. Frontend: React.
+Eval layer: 25 golden test cases, 25/25 passing.
+
+Every major feature was built using Agentic Engineering.
+
+---
+
+### Case A: PRD-First, Not Code-First
+
+Climate Dossier's first step wasn't writing code — it was writing `PRD.md`. The PRD defined:
+- What the product is (What)
+- Two user types (Who)
+- Four Must-Haves (the precursor to Done When)
+- Technology choices and constraints (Constraints)
+
+With a PRD, Claude knows where to run. Starting to code without one is like a director calling "action" without a script.
+
+**How key decisions were recorded:**
+
+Every significant decision was written into `CLAUDE.md` in real time:
+```markdown
+# Climate Dossier — Project CLAUDE.md
+
+## Decided
+- No Vercel (blocked in mainland China)
+- No Google Fonts (blocked in mainland China, self-hosting woff2 instead)
+- LLM: DeepSeek API (with 503 fallback to Anthropic)
+- Eval architecture: write eval cases first, then build the module — test cases define "done"
+```
+
+This isn't note-taking. It's **making Claude inherit these decisions at every future session startup** — no need to re-explain.
+
+---
+
+### Case B: The Eval Layer Is the Acceptance Criteria
+
+In Climate Dossier, the workflow for every new module is fixed:
+
+```
+Write eval cases (define Done When) → Build module → Run eval → Pass → Done
+```
+
+IPCC module: 7 eval cases, 7/7 pass before shipping.
+SBTi module: 10 eval cases, 10/10 pass before shipping.
+NDC module: 8 eval cases, 8/8 pass before shipping.
+Total: 25 golden test cases, all passing.
+
+This is what a `/goal` completion condition looks like in practice — a machine-executable acceptance checklist.
+
+```bash
+# Run the full acceptance suite in one command
+backend/venv/bin/python eval/run_eval.py --module ndc
+# Output: 8/8 passing — done
+```
+
+When "done" becomes a runnable command, Agentic Engineering gets very clear: Claude runs until that command passes.
+
+---
+
+### Case C: Staging Workflow as a Gate System
+
+Climate Dossier implements gates at the database layer:
+
+```
+ingest to dev DB → run eval → pass → promote to prod
+                              ↓
+                           fail → diagnose, re-run
+```
+
+This isn't just technical safety — it's a **structured gate**: Claude can experiment freely in the dev environment, but the prod environment has a concrete entry condition (all evals pass).
+
+Applied to your own projects: in any project with a production environment, **define the gate in the task definition upfront** — don't decide it ad hoc during review.
+
+---
+
+### Case D: Modular Onboarding Protocol
+
+Climate Dossier has a `module-onboarding.md` that defines the complete steps for adding any new module: define document list → configure metadata schema → write eval → run ingestion → verify chunk count → run eval → update CLAUDE.md on pass.
+
+This is a **reusable `/goal` task template**. When adding a new module, you don't reinvent the process — you fill in the new module's parameters and let Claude run the protocol.
+
+This is one of the highest expressions of Agentic Engineering: **the process itself is your most valuable engineering output**, not just the code it produces.
+
+---
+
+## Part 5: Choosing a Tool
+
+**Tools change. Engineering thinking doesn't.** Goal + Constraints + Done When + gate review works on any agentic tool. This guide uses Claude Code, but switching to OpenAI Codex or another tool doesn't change the core method.
+
+Does tool choice matter? Yes — but the deciding factor isn't a feature comparison table; it's your working style.
+
+### How to Decide
+
+**Use Claude Code if:**
+- You develop locally (need to read/write local files, run local servers)
+- You have complex project conventions that need to persist across sessions (CLAUDE.md is designed for this)
+- You need custom workflows (skills, hooks)
+
+**Use OpenAI Codex if:**
+- Your code lives entirely on GitHub, not locally
+- You need to run multiple independent tasks in parallel (cloud sandbox)
+- You don't have or don't want to maintain a local dev environment
+
+Both tools are evolving fast. The feature gap will keep shifting. Base today's decision on your working style, not a feature list.
+
+---
+
+## Part 6: FAQ
+
+**Q: How does this relate to Harness Engineering?**
+
+Harness Engineering (Module 2.6) is the **infrastructure layer**: it teaches Claude how to prove that code is correct (CLAUDE.md, proof of correctness, context hygiene).
+
+Agentic Engineering is the **workflow layer**: it tells Claude where to run, how far to run, and when to stop.
+
+You need both. Without Harness Engineering, Agentic Engineering produces fast but incorrect output. Without Agentic Engineering, Harness Engineering builds correctly but slowly.
+
+**Q: What if Claude runs for 30 minutes and goes completely off course?**
+
+This almost always means the Goal was underspecified, or a critical constraint was missing. Don't patch the wrong output — instead:
+
+1. Find which phrase in the Goal caused the drift
+2. Fix Goal/Constraints
+3. Restart
+
+One complete re-run is faster than dozens of incremental patches.
+
+**Q: Is `/goal` a built-in Claude Code command?**
+
+Yes, `/goal` is a Claude Code built-in — you don't need to create it. Usage: `/goal` followed by an objectively verifiable completion condition (e.g., `/goal all tests pass and npm run build succeeds with no errors`). Claude runs autonomously and judges for itself at the end of each turn whether the condition is met.
+
+**Q: Is this necessary for small projects?**
+
+For one-off scripts or prototypes, vibe coding is fine. Agentic Engineering earns its investment **after a complexity threshold**: when a task touches multiple files, carries side-effect risk, or needs to be repeated, the upfront cost of structured definition pays back on the first run.
+
+---
+
+## Progression Path
+
+| Stage | Capability | Tool |
+|---|---|---|
+| Stage 1 | Single-task agentic runs | `/goal` command + structured context + interrupt policy |
+| Stage 2 | Project-level convention | Project CLAUDE.md — inheriting decisions across sessions |
+| Stage 3 | Repeatable modular process | Onboarding protocol + eval layer |
+| Stage 4 | Automated closed loop | CI/CD integration (eval must pass before merge) |
+
+---
+
+## Appendix: Template Library
+
+### `/goal` Launch Template
+
+```
+# Context
+[Current state description]
+
+# Goal
+[One sentence end state]
+
+# Constraints
+- [Files or features: do not touch]
+- [Technical limits]
+- [Behavior that must be preserved]
+
+# Reference Files
+- @[relevant file path]
+
+/goal [one sentence completion condition, objectively verifiable]
+```
+
+### Interrupt Policy Template (for CLAUDE.md)
+
+```markdown
+## Interrupt Policy
+Pause and ask only if:
+1. Two valid interpretations exist and the choice materially changes the output
+2. A destructive operation is required that was not mentioned in the task definition
+3. A hard technical blocker prevents further progress
+Otherwise: decide, document your reasoning, and keep running.
+```
+
+### Review Checklist Template
+
+```markdown
+## Review Checklist
+- [ ] Done When item 1: pass / fail
+- [ ] Done When item 2: pass / fail
+- [ ] Done When item 3: pass / fail
+- [ ] git diff scope is reasonable, nothing outside Constraints
+- [ ] Tests pass (or eval layer pass)
+- [ ] No new dependencies or architectural changes introduced
+```
+
+---
+---
+
 # 从氛围编程到 Agentic Engineering：工程化 AI 的实战指南
 
 *Module 2.7 — 2C：Advanced Agentic Engineering 进阶篇*
 
+> **English version above — 英文版本在上方**
+>
 > **前置条件：** 本文是 [Module 2.6 Harness Engineering](./07-claude-code-advanced-guide.md) 的续篇。请先完成 Module 2.6，再读这份指南。
 >
 > ⚠️ **Decay disclaimer:** Claude Code 持续迭代，具体命令和功能可能已更新。本文的概念框架长期有效；操作细节以 [claude.ai/code](https://claude.ai/code) 当前文档为准。
